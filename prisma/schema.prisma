@@ -1,0 +1,191 @@
+// Prisma schema for Nasiya Savdo
+// Based on fixed and improved PostgreSQL structure
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum payment_type_enum {
+  CASH
+  CARD
+}
+
+enum payment_flow_enum {
+  IN
+  OUT
+}
+
+enum role_enum {
+  ADMIN
+  STAFF
+}
+
+enum units_enum {
+  kg
+  dona
+  litr
+  m2
+}
+
+enum debt_status_enum {
+  OPEN
+  PARTIAL
+  PAID
+}
+
+model User {
+  id        String    @id @default(uuid())
+  fullname  String
+  username  String    @unique
+  phone     String    @unique
+  password  String
+  is_active Boolean   @default(true)
+  balance   Decimal   @default(0.00)
+  role      role_enum
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  salaries  Salary[]
+  products  Product[]
+  stockEntries StockEntry[]
+  sales     Sale[]
+  payments  Payment[]
+  partners  Partner[]
+}
+
+model Salary {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  amount    Decimal
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+model Partner {
+  id        String    @id @default(uuid())
+  fullname  String
+  phone     String    @unique
+  password  String?
+  address   String
+  balance   Decimal   @default(0.00)
+  is_active Boolean   @default(true)
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+
+  stockEntries StockEntry[]
+  sales        Sale[]
+  payments     Payment[]
+}
+
+model Payment {
+  id         String           @id @default(uuid())
+  partner    Partner          @relation(fields: [partnerId], references: [id])
+  partnerId  String
+  debt       Debt?            @relation(fields: [debtId], references: [id])
+  debtId     String?
+  user       User             @relation(fields: [userId], references: [id])
+  userId     String
+  amount     Decimal
+  comment    String?
+  payment_type payment_type_enum
+  type       payment_flow_enum
+  createdAt  DateTime         @default(now())
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  title     String
+  time      Int
+  is_active Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  products  Product[]
+}
+
+model Product {
+  id         String     @id @default(uuid())
+  title      String
+  sell_price Decimal
+  buy_price  Decimal
+  quantity   Int
+  units      units_enum
+  comment    String?
+  is_active  Boolean    @default(true)
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  category   Category   @relation(fields: [categoryId], references: [id])
+  categoryId String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  stockEntries StockEntry[]
+  sales        Sale[]
+  returns      ReturnedProduct[]
+}
+
+model StockEntry {
+  id         String    @id @default(uuid())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String
+  partner    Partner   @relation(fields: [partnerId], references: [id])
+  partnerId  String
+  product    Product   @relation(fields: [productId], references: [id])
+  productId  String
+  quantity   Int
+  buy_price  Decimal
+  comment    String?
+  createdAt  DateTime  @default(now())
+
+  sales      Sale[]
+}
+
+model Sale {
+  id         String    @id @default(uuid())
+  partner    Partner   @relation(fields: [partnerId], references: [id])
+  partnerId  String
+  product    Product   @relation(fields: [productId], references: [id])
+  productId  String
+  quantity   Int
+  stockEntry StockEntry @relation(fields: [stockEntryId], references: [id])
+  stockEntryId String
+  sell_price Decimal
+  time       Int
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String
+  createdAt  DateTime  @default(now())
+
+  debt       Debt?
+  returns    ReturnedProduct[]
+}
+
+model Debt {
+  id         String    @id @default(uuid())
+  contract   Sale      @relation(fields: [contractId], references: [id])
+  contractId String    @unique()
+  total_debt Decimal
+  paid_amount Decimal   @default(0.00)
+  time       Int
+  status     debt_status_enum @default(OPEN)
+  createdAt  DateTime  @default(now())
+
+  payments   Payment[]
+}
+
+model ReturnedProduct {
+  id         String    @id @default(uuid())
+  sale       Sale      @relation(fields: [saleId], references: [id])
+  saleId     String
+  product    Product   @relation(fields: [productId], references: [id])
+  productId  String
+  quantity   Int
+  is_resellable Boolean
+  reason     String?
+  createdAt  DateTime  @default(now())
+}
