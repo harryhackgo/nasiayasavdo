@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -42,6 +43,8 @@ export class UsersService {
 
       return user;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error creating user: ' + error.message,
       );
@@ -61,6 +64,8 @@ export class UsersService {
         include: {},
       });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error fetching users: ' + error.message,
       );
@@ -77,6 +82,8 @@ export class UsersService {
 
       return user;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error fetching user: ' + error.message,
       );
@@ -93,6 +100,8 @@ export class UsersService {
         data: updateUserDto,
       });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error updating user: ' + error.message,
       );
@@ -106,16 +115,20 @@ export class UsersService {
 
       return await this.prisma.user.delete({ where: { id } });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error deleting user: ' + error.message,
       );
     }
   }
 
-  async findOneByEmail(phone: string): Promise<User | null> {
+  async findOneByPhone(phone: string): Promise<User | null> {
     try {
       return await this.prisma.user.findUnique({ where: { phone } });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error fetching user by phone: ' + error.message,
       );

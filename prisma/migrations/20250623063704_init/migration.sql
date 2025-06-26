@@ -131,7 +131,7 @@ CREATE TABLE "Sale" (
 -- CreateTable
 CREATE TABLE "Debt" (
     "id" TEXT NOT NULL,
-    "contractId" TEXT NOT NULL,
+    "saleId" TEXT NOT NULL,
     "total_debt" DECIMAL(65,30) NOT NULL,
     "paid_amount" DECIMAL(65,30) NOT NULL DEFAULT 0.00,
     "time" INTEGER NOT NULL,
@@ -164,7 +164,7 @@ CREATE UNIQUE INDEX "User_phone_key" ON "User"("phone");
 CREATE UNIQUE INDEX "Partner_phone_key" ON "Partner"("phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Debt_contractId_key" ON "Debt"("contractId");
+CREATE UNIQUE INDEX "Debt_saleId_key" ON "Debt"("saleId");
 
 -- AddForeignKey
 ALTER TABLE "Salary" ADD CONSTRAINT "Salary_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -209,7 +209,7 @@ ALTER TABLE "Sale" ADD CONSTRAINT "Sale_stockEntryId_fkey" FOREIGN KEY ("stockEn
 ALTER TABLE "Sale" ADD CONSTRAINT "Sale_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Debt" ADD CONSTRAINT "Debt_contractId_fkey" FOREIGN KEY ("contractId") REFERENCES "Sale"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Debt" ADD CONSTRAINT "Debt_saleId_fkey" FOREIGN KEY ("saleId") REFERENCES "Sale"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ReturnedProduct" ADD CONSTRAINT "ReturnedProduct_saleId_fkey" FOREIGN KEY ("saleId") REFERENCES "Sale"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

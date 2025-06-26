@@ -25,7 +25,7 @@ async function bootstrap() {
     )
     .setVersion('1.0')
     .addTag('Nasiya Savdo')
-    .addBasicAuth()
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

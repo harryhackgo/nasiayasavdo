@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiParam,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 
@@ -30,6 +31,7 @@ export class CategoriesController {
 
   // Create
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new category' })
   @ApiResponse({ status: 201, description: 'Category created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input or category exists' })
@@ -44,6 +46,7 @@ export class CategoriesController {
 
   // Find all with queries
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get all categories with filters, pagination, and sorting',
   })
@@ -75,10 +78,7 @@ export class CategoriesController {
     const where: Prisma.CategoryWhereInput = {};
 
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { time: { equals: parseInt(search) } },
-      ];
+      where.OR = [{ title: { contains: search, mode: 'insensitive' } }];
     }
 
     let order: Prisma.CategoryOrderByWithRelationInput | undefined = undefined;
@@ -117,6 +117,7 @@ export class CategoriesController {
 
   // Find one
   @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a single category by ID' })
   @ApiParam({ name: 'id', description: 'Category ID (number)' })
   @ApiResponse({ status: 200, description: 'Category found' })
@@ -131,6 +132,7 @@ export class CategoriesController {
 
   // Update
   @Patch(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a category by ID' })
   @ApiParam({ name: 'id', description: 'Category ID (number)' })
   @ApiResponse({ status: 200, description: 'Category updated successfully' })
@@ -148,6 +150,7 @@ export class CategoriesController {
 
   // Delete
   @Delete(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a category by ID' })
   @ApiParam({ name: 'id', description: 'Category ID (number)' })
   @ApiResponse({ status: 200, description: 'Category deleted successfully' })

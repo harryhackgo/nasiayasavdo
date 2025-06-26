@@ -9,11 +9,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
-export enum Role {
-  ADMIN = 'ADMIN',
-  STAFF = 'STAFF',
-}
+import { role_enum } from '@prisma/client';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'John Doe', description: 'Full name of the user' })
@@ -61,10 +57,10 @@ export class CreateUserDto {
   balance?: number = 0;
 
   @ApiProperty({
-    example: Role.STAFF,
-    enum: Role,
+    example: role_enum.ADMIN,
+    enum: role_enum,
     description: 'User role (ADMIN or STAFF)',
   })
-  @IsEnum(Role)
-  role: Role;
+  @IsEnum(role_enum)
+  role: role_enum;
 }

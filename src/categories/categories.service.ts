@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -35,6 +36,8 @@ export class CategoriesService {
 
       return category;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error creating category: ' + error.message,
       );
@@ -54,6 +57,8 @@ export class CategoriesService {
         include: {},
       });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error fetching categories: ' + error.message,
       );
@@ -70,6 +75,8 @@ export class CategoriesService {
 
       return category;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error fetching category: ' + error.message,
       );
@@ -89,6 +96,8 @@ export class CategoriesService {
         data: updateCategoryDto,
       });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error updating category: ' + error.message,
       );
@@ -102,6 +111,8 @@ export class CategoriesService {
 
       return await this.prisma.category.delete({ where: { id } });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new InternalServerErrorException(
         'Error deleting category: ' + error.message,
       );

@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,9 +21,15 @@ import {
   ApiResponse,
   ApiParam,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../enums/role.enum';
 
+@Roles(Role.Owner)
+@UseGuards(RolesGuard)
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
@@ -30,6 +37,7 @@ export class UsersController {
 
   // Create
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input or user exists' })
@@ -44,6 +52,7 @@ export class UsersController {
 
   // Find all with queries
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get all users with filters, pagination, and sorting',
   })
@@ -118,6 +127,7 @@ export class UsersController {
 
   // Find one
   @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a single user by ID' })
   @ApiParam({ name: 'id', description: 'User ID (number)' })
   @ApiResponse({ status: 200, description: 'User found' })
@@ -132,6 +142,7 @@ export class UsersController {
 
   // Update
   @Patch(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a user by ID' })
   @ApiParam({ name: 'id', description: 'User ID (number)' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
@@ -149,6 +160,7 @@ export class UsersController {
 
   // Delete
   @Delete(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a user by ID' })
   @ApiParam({ name: 'id', description: 'User ID (number)' })
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
