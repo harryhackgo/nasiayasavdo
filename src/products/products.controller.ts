@@ -10,6 +10,10 @@ import {
   HttpException,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
+  // UseInterceptors,
+  // UploadedFile,
+  // BadRequestException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -23,7 +27,17 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
+import { RolesGuard } from '../guards/roles.guard';
+// import { FileInterceptor } from '@nestjs/platform-express';
+// import * as multerS3 from 'multer-s3';
+// import { s3 } from '../config/s3.config';
+// import { v4 as uuidv4 } from 'uuid';
 
+// interface S3MulterFile extends Express.Multer.File {
+//   location: string; // URL of the uploaded image
+// }
+
+@UseGuards(RolesGuard)
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
@@ -31,13 +45,43 @@ export class ProductsController {
 
   // CREATE
   @Post()
+  // @UseInterceptors(
+  //   FileInterceptor('image', {
+  //     storage: multerS3({
+  //       s3,
+  //       bucket: 'satil',
+  //       acl: 'public-read',
+  //       key: (req, file, cb) => {
+  //         const filename = `${uuidv4()}-${file.originalname}`;
+  //         cb(null, filename);
+  //       },
+  //     }),
+  //     fileFilter: (req, file, cb) => {
+  //       if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+  //         return cb(
+  //           new BadRequestException('Only image files are allowed!'),
+  //           false,
+  //         );
+  //       }
+  //       cb(null, true);
+  //     },
+  //     limits: { fileSize: 5 * 1024 * 1024 },
+  //   }),
+  // )
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new product' })
   @ApiResponse({ status: 201, description: 'Product created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input or product exists' })
-  async create(@Body() createProductDto: CreateProductDto) {
+  async create(
+    // @UploadedFile() file: S3MulterFile,
+    @Body() createProductDto: CreateProductDto,
+  ) {
     try {
-      return await this.productsService.create(createProductDto);
+      // const image_url = file?.location;
+      return await this.productsService.create({
+        ...createProductDto,
+        // image_url,
+      });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -128,6 +172,29 @@ export class ProductsController {
 
   // UPDATE
   @Patch(':id')
+  // @UseInterceptors(
+  //   FileInterceptor('image', {
+  //     storage: multerS3({
+  //       s3,
+  //       bucket: 'satil',
+  //       acl: 'public-read',
+  //       key: (req, file, cb) => {
+  //         const filename = `${uuidv4()}-${file.originalname}`;
+  //         cb(null, filename);
+  //       },
+  //     }),
+  //     fileFilter: (req, file, cb) => {
+  //       if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+  //         return cb(
+  //           new BadRequestException('Only image files are allowed!'),
+  //           false,
+  //         );
+  //       }
+  //       cb(null, true);
+  //     },
+  //     limits: { fileSize: 5 * 1024 * 1024 },
+  //   }),
+  // )
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a product by ID' })
   @ApiParam({ name: 'id', description: 'Product ID (UUID)' })

@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { SalariesService } from './salaries.service';
 import { CreateSalaryDto } from './dto/create-salary.dto';
@@ -23,7 +24,9 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
+import { RolesGuard } from '../guards/roles.guard';
 
+@UseGuards(RolesGuard)
 @ApiTags('Salaries')
 @Controller('salaries')
 export class SalariesController {

@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { PartnersService } from './partners.service';
 import { CreatePartnerDto } from './dto/create-partner.dto';
@@ -23,7 +24,9 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
+import { RolesGuard } from '../guards/roles.guard';
 
+@UseGuards(RolesGuard)
 @ApiTags('Partners')
 @Controller('partners')
 export class PartnersController {

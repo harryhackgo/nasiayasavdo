@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { DebtsService } from './debts.service';
 import { CreateDebtDto } from './dto/create-debt.dto';
@@ -23,7 +24,9 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { debt_status_enum, Prisma } from '@prisma/client';
+import { RolesGuard } from '../guards/roles.guard';
 
+@UseGuards(RolesGuard)
 @ApiTags('Debts')
 @Controller('debts')
 export class DebtsController {

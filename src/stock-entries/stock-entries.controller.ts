@@ -10,6 +10,7 @@ import {
   HttpException,
   HttpStatus,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { StockEntriesService } from './stock-entries.service';
 import { CreateStockEntryDto } from './dto/create-stock-entry.dto';
@@ -23,7 +24,9 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
+import { RolesGuard } from '../guards/roles.guard';
 
+@UseGuards(RolesGuard)
 @ApiTags('Stock Entries')
 @Controller('stock-entries')
 export class StockEntriesController {

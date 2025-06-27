@@ -27,9 +27,10 @@ import { Prisma } from '@prisma/client';
 import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Roles(Role.Owner)
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {

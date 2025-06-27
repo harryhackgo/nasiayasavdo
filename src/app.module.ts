@@ -16,7 +16,6 @@ import { DebtsModule } from './debts/debts.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ReturnedProductsModule } from './returned-products/returned-products.module';
 import { SalariesModule } from './salaries/salaries.module';
-import { AuthGuard } from './guards/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 
@@ -45,13 +44,9 @@ import { AuthModule } from './auth/auth.module';
   ],
   controllers: [AppController],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: ThrottlerGuard,
-    // },
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: ThrottlerGuard,
     },
     AppService,
   ],

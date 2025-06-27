@@ -68,6 +68,15 @@ export class CreateProductDto {
   comment?: string;
 
   @ApiProperty({
+    example: 'Top-selling smartphone in 2024',
+    required: false,
+    description: 'Optional image or note about the product',
+  })
+  @IsOptional()
+  @IsString()
+  image_url?: string;
+
+  @ApiProperty({
     example: true,
     required: false,
     description: 'Whether the product is active or archived',

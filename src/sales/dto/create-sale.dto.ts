@@ -22,7 +22,7 @@ export class CreateSaleDto {
   })
   @IsUUID()
   @IsOptional()
-  stockEntryId: string;
+  stockEntryId?: string;
 
   @ApiProperty({
     example: 5,
@@ -43,6 +43,7 @@ export class CreateSaleDto {
     description: 'UNIX timestamp of the sale',
   })
   @IsInt()
+  @IsOptional()
   time: number;
 
   @ApiProperty({
